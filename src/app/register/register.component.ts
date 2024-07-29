@@ -21,6 +21,7 @@ export class RegisterComponent implements OnInit {
 
   errorMessage: string | null = null;
   editForm!: FormGroup
+  isLoading = false;
 
   constructor(private authService: AuthService, private router: Router, private alertController: AlertController, private formBuilder: FormBuilder) {
     this.router.events.pipe(
@@ -48,6 +49,7 @@ export class RegisterComponent implements OnInit {
   }
 
   async onSubmit() {
+    this.isLoading = true;
     try {
       await this.authService.register(this.user.email, this.user.password, this.user.name, this.user.photoUrl);
       console.log('Usuario registrado exitosamente');
@@ -66,6 +68,8 @@ export class RegisterComponent implements OnInit {
     } catch (error: any) {
       console.error('Error during registration', error);
       this.errorMessage = this.translateErrorMessage(error.code);
+    } finally {
+      this.isLoading = false;
     }
   }
 

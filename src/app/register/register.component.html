@@ -38,6 +38,9 @@
 
     <ion-text class="underline flex justify-end mr-5 cursor-pointer mt-5" color="primary" (click)="navigateToLogin()">Ya
       cuentas con una cuenta?</ion-text>
-    <ion-button [disabled]="!editForm.valid" id="button-send" expand="block" type="submit" shape="round" class="mt-8">Crear cuenta</ion-button>
+    <ion-button [disabled]="!editForm.valid" id="button-send" expand="block" type="submit" shape="round" class="mt-8">
+      <ion-text *ngIf="!isLoading">Crear cuenta</ion-text>
+      <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+    </ion-button>
   </form>
 </ion-content>

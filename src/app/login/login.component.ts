@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
   email!: string;
   password!: string;
   editForm!: FormGroup
+  isLoading = false;
 
   ngOnInit(): void {
     this.initForm();
@@ -51,18 +52,22 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  login() {
-    if (this.editForm.valid) {
-      const { email, password } = this.editForm.value;
-      this.authService.login(email, password).then(() => {
-        console.log('Inicio de sesión exitoso');
-        this.router.navigate(['/home']);
-      }).catch((error) => {
-        console.error('Error durante el inicio de sesión:', error);
-        this.errorMessage = this.translateErrorMessage(error.code);
-      });
-    } else {
+  async login() {
+    if (!this.editForm.valid) {
       console.log('El formulario es inválido');
+      return;
+    }
+
+    this.isLoading = true;
+    
+    try {
+      const { email, password } = this.editForm.value;
+      await this.authService.login(email, password);
+      this.router.navigate(['/home']);
+    } catch (error:any) {
+      this.errorMessage = this.translateErrorMessage(error.code);
+    } finally {
+      this.isLoading = false;
     }
   }
 

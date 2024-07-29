@@ -26,7 +26,8 @@
       (click)="navigateToRegister()">No
       tienes cuenta?</ion-text>
     <ion-button [disabled]="!editForm.valid" expand="block" shape="round" type="submit">
-      Iniciar Sesión
+      <ion-text *ngIf="!isLoading">Iniciar Sesión</ion-text>
+      <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
     </ion-button>
   </form>
 </ion-content>
