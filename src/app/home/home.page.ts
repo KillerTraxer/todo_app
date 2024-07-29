@@ -10,6 +10,7 @@ import { PopoverController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { IonRefresher } from '@ionic/angular';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -118,6 +119,17 @@ export class HomePage implements OnInit, OnDestroy {
     });
     return await popover.present();
   }
+
+  async doRefresh(event: any) {
+    try {
+      await this.loadUserNotes(); 
+      event.target.complete(); 
+    } catch (error) {
+      console.error('Error refreshing notes:', error);
+      event.target.complete();
+    }
+  }
+  
 
 
   ngOnDestroy(): void {

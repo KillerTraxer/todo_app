@@ -54,6 +54,10 @@
     </ng-template>
   </ng-template>
 
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-modal [isOpen]="isOpen" (willDismiss)="onWillDismiss($event)">
     <ng-template>
       <form #f="ngForm" class="h-full">

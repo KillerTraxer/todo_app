@@ -15,7 +15,7 @@
 
 <ion-content class="ion-padding ml-5 mr-5">
   <div class="profile-image-container mr-4" *ngIf="!isEditing">
-    <img *ngIf="userProfile.photoUrl" [src]="userProfile.photoUrl ? userProfile.photoUrl : 'https://ionicframework.com/docs/img/demos/avatar.svg'" alt="Foto de perfil"
+    <img [src]="userProfile.photoUrl ? userProfile.photoUrl : 'https://ionicframework.com/docs/img/demos/avatar.svg'" alt="Foto de perfil"
       class="profile-image" />
   </div>
 

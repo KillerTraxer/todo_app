@@ -39,3 +39,14 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  ion-app {
+    max-width: 100%;
+    min-height: 100vh;
+  }
