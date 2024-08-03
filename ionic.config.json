@@ -1,5 +1,5 @@
 {
-  "name": "notes_app",
+  "name": "todo_app",
   "integrations": {
     "capacitor": {}
   },
