@@ -5,7 +5,7 @@
       <ion-button *ngIf="isEditing" (click)="cancelChange()" color="primary">Cancelar</ion-button>
     </ion-buttons>
     <ion-title class="text-center text-2xl">Perfil</ion-title>
-    <ion-buttons slot="start" *ngIf="!isEditing">
+    <ion-buttons slot="start" [class.hidden-icon]="isEditing">
       <ion-button (click)="dismissModal()">
         <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
       </ion-button>
@@ -36,16 +36,19 @@
 
       <ion-text class="underline mt-3" color="primary" (click)="takePicture()">Cambiar foto</ion-text>
     </div>
-    <ion-item class="ion-margin-bottom">
+    <ion-item class="ion-margin-bottom" color="warning">
       <ion-input type="text" id="name" formControlName="name" name="name"
         placeholder="Nombre" required></ion-input>
     </ion-item>
 
-    <ion-item class="ion-margin-bottom">
+    <ion-item class="ion-margin-bottom" color="warning">
       <ion-input type="text" id="email" formControlName="email" name="name"
         placeholder="Email" required></ion-input>
     </ion-item>
 
-    <ion-button expand="block" type="submit" shape="round" class="mt-8" >Guardar cambios</ion-button>
+    <ion-button expand="block" type="submit" shape="round" class="mt-8" >
+      <ion-text *ngIf="!isLoading">Guardar cambios</ion-text>
+      <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+    </ion-button>
   </form>
 </ion-content>

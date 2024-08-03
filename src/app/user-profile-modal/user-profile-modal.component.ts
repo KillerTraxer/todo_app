@@ -22,6 +22,7 @@ export class UserProfileModalComponent implements OnInit {
   isEditing: boolean = false;
   editForm!: FormGroup;
   tempPhotoUrl: string = '';
+  isLoading: boolean = false;
 
   constructor(private modalCtrl: ModalController, private fb: FormBuilder, private storage: AngularFireStorage, private firestore: AngularFirestore, private alertController: AlertController) {
     this.editForm = this.fb.group({
@@ -59,6 +60,7 @@ export class UserProfileModalComponent implements OnInit {
   }
 
   async saveChanges() {
+    this.isLoading = true;
     try {
       console.log(this.tempPhotoUrl !== this.userProfile.photoUrl)
       const userId = this.userProfile.uid
@@ -100,6 +102,8 @@ export class UserProfileModalComponent implements OnInit {
     } catch (e) {
       console.error('Error saving changes:', e);
       this.isEditing = false;
+    } finally {
+      this.isLoading = false;
     }
   }
 

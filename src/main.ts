@@ -5,6 +5,8 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { enableProdMode } from '@angular/core';
 
+import 'hammerjs';
+
 defineCustomElements(window);
 if (environment.production) {
   enableProdMode();

@@ -28,11 +28,11 @@
 }
 
 ion-toolbar {
-    --background: #f5f5f3;
+    --background: var(--ion-background-color, --td-bg);
 }
 
 ion-content {
-    --background: #f5f5f3;
+    // --background: #f5f5f3;
 
     #header {
         display: flex;
@@ -42,8 +42,8 @@ ion-content {
         h1 {
             font-weight: 700;
             font-size: 26px;
-            color: var(--input-background-color-light);
-            margin-bottom: 10%;
+            // color: #010100;
+            margin-bottom: 5%;
         }
     }
 
@@ -82,7 +82,7 @@ ion-content {
             }
 
             .input-pass {
-                --padding-top: 10px
+                --padding-top: 6px;
             }
 
             ion-input {
@@ -93,37 +93,13 @@ ion-content {
                 --padding-right: 5px;
                 --border-radius: 50px;
                 border: none;
-            }
-
-            a {
-                font-size: 17px;
-                letter-spacing: 0.5px;
-                text-decoration: none;
+                background: var(--ion-input-color);
+                color: var(--ion-input-text);
             }
         }
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    ion-toolbar {
-        --background: #1a1a1a;
-    }
-
-    ion-content {
-        --background: #1a1a1a;
-
-        #header {
-            h1 {
-                color: #ffffff;
-            }
-        }
-
-
-        #form {
-            ion-input {
-                background-color: #000000;
-                --background-color: #000000;
-            }
-        }
-    }
+.text-link {
+    color: var(--ion-text-link)
 }

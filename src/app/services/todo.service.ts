@@ -3,11 +3,8 @@ import { Firestore, addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateD
 import { BehaviorSubject } from 'rxjs';
 
 export interface Note {
-  title: string;
-  description: string;
   id?: string;
   userId: string;
-  taskId: string;
   category: string;
   status: number;
   name: string;
@@ -16,7 +13,7 @@ export interface Note {
 @Injectable({
   providedIn: 'root'
 })
-export class NoteService {
+export class TodoService {
   private _notes = new BehaviorSubject<Note[]>([]);
 
   get notes() {
@@ -29,7 +26,7 @@ export class NoteService {
 
   async addNote(userId: string, data: Omit<Note, 'userId'>) {
     try {
-      const dataRef: any = collection(this.firestore, 'notes');
+      const dataRef: any = collection(this.firestore, 'userTodos');
       const response = await addDoc(dataRef, { ...data, userId });
       const id = await response?.id;
       const currentNotes = this._notes.value;
@@ -44,7 +41,7 @@ export class NoteService {
 
   async getNotes(userId: string) {
     try {
-      const dataRef: any = collection(this.firestore, 'notes');
+      const dataRef: any = collection(this.firestore, 'userTodos');
       const querySnapshot = await getDocs(dataRef);
       const notes: Note[] = await querySnapshot.docs.map((doc) => {
         let item: any = doc.data();
@@ -60,16 +57,16 @@ export class NoteService {
 
   async getNoteById(id: string) {
     try {
-      const dataRef: any = doc(this.firestore, `notes/${id}`);
+      const dataRef: any = doc(this.firestore, `userTodos/${id}`);
       const docSnap = await getDoc(dataRef);
       if (docSnap.exists()) {
         // return docSnap.data() as Note;
         let item: any = docSnap.data();
         item.id = docSnap.id;
-        return {...item} as Note;
+        return { ...item } as Note;
       } else {
         console.log("No se encontro el documento");
-        throw("No se encontro la nota!");
+        throw ("No se encontro la nota!");
       }
     } catch (e) {
       throw (e);
@@ -78,7 +75,7 @@ export class NoteService {
 
   async updateNote(id: string, userId: string, data: Partial<Omit<Note, 'id' | 'userId'>>) {
     try {
-      const dataRef: any = doc(this.firestore, `notes/${id}`);
+      const dataRef: any = doc(this.firestore, `userTodos/${id}`);
       const fullData = { ...data, userId };
       await updateDoc(dataRef, fullData);
       let currentNotes = this._notes.value;
@@ -92,9 +89,25 @@ export class NoteService {
     }
   }
 
+  async updateTodoStatus(id: string, newStatus: number) {
+    try {
+      const docRef = doc(this.firestore, `userTodos/${id}`);
+      await updateDoc(docRef, { status: newStatus });
+      let currentNotes = this._notes.value;
+      const index = currentNotes.findIndex(note => note.id === id);
+      if (index !== -1) {
+        const updateNote = { ...currentNotes[index], status: newStatus };
+        currentNotes[index] = updateNote;
+        this._notes.next(currentNotes)
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async deleteNote(id: string, userId: string) {
     try {
-      const dataRef: any = doc(this.firestore, `notes/${id}`);
+      const dataRef: any = doc(this.firestore, `userTodos/${id}`);
       await deleteDoc(dataRef);
       let currentNotes = this._notes.value;
       currentNotes = currentNotes.filter(x => x.id !== id || x.userId !== userId);

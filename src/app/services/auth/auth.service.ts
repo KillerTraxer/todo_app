@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { finalize, Observable, of } from 'rxjs';
+import { finalize, Observable, of, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { Preferences } from '@capacitor/preferences';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
+
+interface UserData {
+  name?: string; // El signo de interrogación indica que esta propiedad es opcional
+  photoUrl?: string; // Opcional
+  // Agrega aquí cualquier otra propiedad que necesites
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +18,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 export class AuthService {
 
   user$: Observable<any>;
+  public onLogout = new Subject<void>();
 
   constructor(private afAuth: AngularFireAuth, private router: Router, private firestore: AngularFirestore, private storage: AngularFireStorage) {
     this.loadUserFromPreferences();
@@ -29,7 +36,7 @@ export class AuthService {
           if (userDoc.exists) {
             const userData = userDoc.data();
             const userDataObj = typeof userData === 'object' ? userData : {};
-            
+
             Preferences.set({
               key: 'user',
               value: JSON.stringify({ ...userDataObj, uid: result.user?.uid, email: result.user?.email }),
@@ -73,6 +80,7 @@ export class AuthService {
   async logout() {
     return this.afAuth.signOut().then(() => {
       Preferences.remove({ key: 'user' });
+      this.onLogout.next();
       this.router.navigate(['/login']);
     });
   }
@@ -138,5 +146,22 @@ export class AuthService {
     const byteArray = new Uint8Array(byteNumbers);
     return new Blob([byteArray], { type: mimeType });
   }
+
+
+  async getUserData(uid: string): Promise<UserData | null> {
+    const userDoc$ = this.firestore.collection('users').doc(uid).get();
+    return userDoc$.toPromise()
+      .then((doc: any) => {
+        if (doc.exists) {
+          return doc.data();
+        }
+        return null;
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+        return null;
+      });
+  }
+
 
 }

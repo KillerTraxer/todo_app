@@ -1,16 +1,14 @@
 <ion-header [translucent]="true" class="ion-no-border">
-  <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button (click)="isOpen = true">
-        <ion-icon name="add" color="primary"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title class="text-center text-2xl">
-      Notas
-    </ion-title>
+  <ion-toolbar mode="ios">
     <ion-buttons slot="start">
       <ion-button (click)="presentPopover($event)">
-        <ion-icon name="person" color="primary"></ion-icon>
+        <ion-icon name="menu-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="onProfile()">
+        <ion-icon slot="icon-only" name="person-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -22,71 +20,88 @@
   </div>
 
   <ng-template #content>
-    <div *ngIf="notes.length > 0; else noNotes">
-      <ion-list>
-        <ion-item-sliding *ngFor="let item of notes">
-          <ion-item-options side="end">
-            <ion-item-option color="secondary" (click)="editNote(item)">Editar</ion-item-option>
-            <ion-item-option color="danger" (click)="deleteNote(item)">Eliminar</ion-item-option>
-          </ion-item-options>
+    <div id="container">
+      <strong>Hola {{userProfile.name}}!</strong>
+      <span class="todays-header">TAREAS</span>
 
-          <ion-item>
-            <ion-label>
-              <ion-text class="text-lg">
-                {{item?.title}}
-              </ion-text>
-              <p>
-                <ion-text class="ion-text-wrap line-clamp-3 text-base">
-                  {{item?.description}}
-                </ion-text>
-              </p>
-            </ion-label>
+      <div class="task-list" *ngFor="let item of notes">
+        <ion-item-sliding>
+          <ion-item class="item" color="success" lines="none">
+            <table>
+              <tbody>
+                <tr>
+                  <td class="task-category" (click)="toggleStatus(item)">
+                    <div class="circular-filled" *ngIf="item.status === 1"><i class="bx bx-check"></i></div>
+                    <div class="circular" *ngIf="item.status == 0"
+                      [ngClass]="{'magenta': item.category == 'business', 'blue': item.category == 'personal'}"></div>
+                  </td>
+                  <td class="task-name" (click)="editNote(item)">
+                    <span *ngIf="item.status == 0">{{ item.name }}</span>
+                    <span *ngIf="item.status == 1"><s>&nbsp;{{ item.name }}&nbsp;&nbsp;</s></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </ion-item>
 
+          <ion-item-options side="end">
+            <ion-item-option (click)="onMove(item)" color="danger" mode="ios">Eliminar</ion-item-option>
+          </ion-item-options>
         </ion-item-sliding>
-      </ion-list>
-    </div>
-
-    <ng-template #noNotes>
-      <div class="ion-text-center ion-padding text-base text-gray-500 text-[18px]">
-        Sin notas creadas
       </div>
-    </ng-template>
+    </div>
   </ng-template>
+
+  <ion-fab id="add-task-button" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button mode="ios" [disabled]="isLoading">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-modal [isOpen]="isOpen" (willDismiss)="onWillDismiss($event)">
+  <ion-modal [isOpen]="isOpen" (willDismiss)="onWillDismiss($event)" trigger="add-task-button" mode="ios"
+    [breakpoints]="[0, 0.5, 1]" [initialBreakpoint]="0.5">
     <ng-template>
-      <form #f="ngForm" class="h-full">
-        <ion-header class="ion-no-border">
-          <ion-toolbar>
-            <ion-buttons slot="start">
-              <ion-button (click)="cancel()">
-                <ion-icon name="arrow-back-outline" color="primary"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-            <ion-input type="text" class="text-center font-semibold text-2xl border-none input-title"
-              [(ngModel)]="model.title" fill="outline" placeholder="Titulo" required name="title"></ion-input>
-            <ion-buttons slot="end">
-              <ion-button (click)="save(f)">
-                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
+      <ion-content [fullscreen]="true">
+        <form #f="ngForm" class="h-full">
+          <div class="container">
+            <ion-input [(ngModel)]="model.name" name="name" autofocus="true" placeholder="Nueva tarea" #taskName
+              required></ion-input>
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="rounded-rectangle">
+                      <ion-icon name="calendar-clear-outline"></ion-icon>
+                      <span>Hoy</span>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="rounded" (click)="toggleCategory()">
+                      <ion-icon id="radio-icon" [class.radio-business]="model.category === 'business'"
+                        [class.radio-personal]="model.category === 'personal'"
+                        name="radio-button-on-outline"></ion-icon>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
 
-        <ion-content>
-          <ion-item>
-            <ion-textarea [autoGrow]="true" type="text" name="descripción"
-              class="border-none h-full text-[18px] w-full pt-3 input-desc" placeholder="Descripción de la nota"
-              [(ngModel)]="model.description" required name="description">
-            </ion-textarea>
-          </ion-item>
-        </ion-content>
-      </form>
+              <ion-fab slot="fixed" vertical="bottom" horizontal="end" class="ion-fab-modal">
+                <ion-fab-button *ngIf="!isLoadingButton" class="ion-fab-button-modal" type="submit" (click)="save(f)">
+                  {{ isEditing ? 'Guardar cambios' : 'Crear tarea' }} &nbsp;
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button *ngIf="isLoadingButton" class="ion-fab-button-modal">
+                  <ion-spinner name="crescent"></ion-spinner>
+                </ion-fab-button>
+              </ion-fab>
+            </table>
+          </div>
+        </form>
+      </ion-content>
     </ng-template>
   </ion-modal>
 

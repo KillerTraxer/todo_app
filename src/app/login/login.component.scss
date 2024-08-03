@@ -1,15 +1,10 @@
 ion-toolbar {
-    --background: #f5f5f3;
-
-    ion-button {
-        text-transform: initial;
-        font-size: 17px;
-    }
+    --background: var(--ion-background-color, --td-bg);
+    padding: 1rem 0.3rem;
+    padding-bottom: 0;
 }
 
 ion-content {
-    --background: #f5f5f3;
-
     #header {
         display: flex;
         flex-direction: column;
@@ -18,20 +13,20 @@ ion-content {
         h1 {
             font-weight: 700;
             font-size: 26px;
-            color: #010100;
-            margin-bottom: 15%;
+            // color: #010100;
+            margin-bottom: 5%;
         }
 
-        img {
-            width: 125px;
-            height: 125px;
-            border-radius: 50%;
-            -webkit-border-radius: 50%;
-            -moz-border-radius: 50%;
-            -ms-border-radius: 50%;
-            -o-border-radius: 50%;
-            border: 8px solid #ffffff;
-        }
+        // img {
+        //     width: 125px;
+        //     height: 125px;
+        //     border-radius: 50%;
+        //     -webkit-border-radius: 50%;
+        //     -moz-border-radius: 50%;
+        //     -ms-border-radius: 50%;
+        //     -o-border-radius: 50%;
+        //     border: 8px solid #ffffff;
+        // }
     }
 
     #form {
@@ -68,7 +63,7 @@ ion-content {
             }
 
             #input-pass {
-                --padding-top: 10px;
+                --padding-top: 6px;
             }
 
             ion-input {
@@ -79,37 +74,13 @@ ion-content {
                 --padding-right: 5px;
                 --border-radius: 50px;
                 border: none;
-            }
-
-            a {
-                font-size: 17px;
-                letter-spacing: 0.5px;
-                text-decoration: none;
+                background: var(--ion-input-color);
+                color: var(--ion-input-text);
             }
         }
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    ion-toolbar {
-        --background: #1a1a1a;
-    }
-
-    ion-content {
-        --background: #1a1a1a;
-
-        #header {
-            h1 {
-                color: #ffffff;
-            }
-        }
-
-
-        #form {
-            ion-input {
-                background-color: #000000;
-                --background-color: #000000;
-            }
-        }
-    }
+.text-link {
+    color: var(--ion-text-link)
 }

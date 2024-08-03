@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
-import { UserProfileModalComponent } from '../user-profile-modal/user-profile-modal.component';
 import { AuthService } from '../services/auth/auth.service';
-import { NoteService } from '../services/note/note.service';
+// import { NoteService } from '../services/note/note.service';
+import { TodoService } from '../services/todo.service';
 
 @Component({
   selector: 'app-popover-content',
@@ -11,16 +11,9 @@ import { NoteService } from '../services/note/note.service';
   styleUrls: ['./popover-content.component.scss'],
 })
 export class PopoverContentComponent implements OnInit {
-  constructor(private popoverCtrl: PopoverController, private modalCtrl: ModalController, private authService: AuthService, private noteService: NoteService) { }
+  constructor(private popoverCtrl: PopoverController, private modalCtrl: ModalController, private authService: AuthService, private noteService: TodoService) { }
 
   ngOnInit() { }
-
-  async onProfile() {
-    const modal = await this.modalCtrl.create({
-      component: UserProfileModalComponent,
-    });
-    return await modal.present();
-  }
 
   async onLogout() {
     this.authService.logout();

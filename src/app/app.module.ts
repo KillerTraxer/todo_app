@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -17,11 +17,21 @@ import { environment } from 'src/environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { RegisterComponent } from './register/register.component';
+import * as Hammer from "hammerjs";
+
+export class MyHammerConfig extends
+HammerGestureConfig {
+  override = <any>{
+    'swipe': {
+      direction: Hammer.DIRECTION_ALL
+    },
+  };
+}
 
 @NgModule({
   declarations: [AppComponent, PopoverContentComponent, UserProfileModalComponent, LoginComponent, RegisterComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, AngularFireModule.initializeApp(environment.firebase), FormsModule, ReactiveFormsModule, AngularFirestoreModule.enablePersistence()],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideFirebaseApp(() => initializeApp(environment.firebase)), provideAuth(() => getAuth()), provideFirestore(() => getFirestore())],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig }, provideFirebaseApp(() => initializeApp(environment.firebase)), provideAuth(() => getAuth()), provideFirestore(() => getFirestore())],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
